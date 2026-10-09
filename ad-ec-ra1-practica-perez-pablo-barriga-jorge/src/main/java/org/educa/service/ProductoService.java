@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.util.List;
 
 
+
 public class ProductoService {
     private final ProductoDAO productoDAO=new ProductoDAOimpl();
     public List<ProductoEntity> readFile(String fileXml) throws JAXBException {
@@ -19,6 +20,7 @@ public class ProductoService {
 
     public void exportSummary(String path, String fileXml) throws JAXBException, IOException {
         //TODO: Implementar
+        productoDAO.crearFichero(path,new File(fileXml));
 
     }
 
