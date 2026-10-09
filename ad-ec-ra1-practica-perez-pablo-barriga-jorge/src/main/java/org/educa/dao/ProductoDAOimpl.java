@@ -66,7 +66,7 @@ public class ProductoDAOimpl implements ProductoDAO {
                 }
             }
         }
-        //Falta crear el fichero y escribirlo
+        //Falta crear el fichero y escribirlo (pablo)
 
     }
 
