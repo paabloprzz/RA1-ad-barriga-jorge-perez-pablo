@@ -13,7 +13,7 @@ public class Activity3 {
     public static void main(String[] args) {
         ProductoService productoService = new ProductoService();
         try {
-            productoService.exportExcel(PATH, FILE_XML);
+            productoService.exportExcel(PATH,FILE_XML);
         } catch (JAXBException | IOException | ParseException e) {
             throw new RuntimeException(e);
         }
