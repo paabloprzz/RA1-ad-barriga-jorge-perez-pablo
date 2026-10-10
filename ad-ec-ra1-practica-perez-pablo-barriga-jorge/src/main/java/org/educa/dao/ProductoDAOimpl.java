@@ -47,8 +47,19 @@ public class ProductoDAOimpl implements ProductoDAO {
         writer.write("Tamaño del fichero: " + file.length() + " bytes");
         writer.close();
     }
+
     @Override
     public void writeExcelFile(String path, String fecha, Workbook workbook) throws IOException {
+
+        File outputDir = new File(path);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+        File outputFile = new File(outputDir, "export_" + fecha + ".xlsx");
+        FileOutputStream fileOut = new FileOutputStream(outputFile);
+        workbook.write(fileOut);
+        fileOut.close();
+        workbook.close();
 
     }
 }
