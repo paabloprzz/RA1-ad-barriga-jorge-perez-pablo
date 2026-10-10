@@ -28,12 +28,12 @@ public class ProductoDAOimpl implements ProductoDAO {
             for (Producto p : productos.getProducto()) {
                 ProductoEntity entity = new ProductoEntity();
                 entity.setProducto(p);
-                BigDecimal precioFinal = p.getPrecio().multiply(BigDecimal.valueOf(0.845));
-                entity.setPrecioFinal(precioFinal);
-                BigDecimal coste = p.getPrecio().add(p.getCostes().getCostesAlmacenaje().add(p.getCostes().getCostesEnvio()));
-                entity.setCost(coste);
-                BigDecimal beneficio = entity.getCost().subtract(entity.getPrecioFinal());
-                entity.setProfit(beneficio);
+                double precioFinal = p.getPrecio().intValue()-(p.getPrecio().intValue()*((double) p.getDescuento().intValue() /100));
+                entity.setPrecioFinal(BigDecimal.valueOf(precioFinal));
+                double coste= p.getPrecio().intValue()+p.getCostes().getCostesAlmacenaje().intValue()+p.getCostes().getCostesEnvio().intValue();
+                entity.setCost(BigDecimal.valueOf(coste));
+                double beneficio = entity.getCost().intValue()+entity.getPrecioFinal().intValue();
+                entity.setProfit(BigDecimal.valueOf(beneficio));
                 listaEntities.add(entity);
             }
         }
@@ -52,22 +52,37 @@ public class ProductoDAOimpl implements ProductoDAO {
 
         String fecha = fichSinExtension.substring(fichSinExtension.indexOf('_') + 1);
         int numeroProductos = 0;
-        BigDecimal beneficioTotal = BigDecimal.ZERO;
+        double beneficioTotal = 0;
 
         if (productos != null && productos.getProducto() != null) {
             numeroProductos = productos.getProducto().size();
             for (Producto p : productos.getProducto()) {
                 if (p.getPrecio() != null) {
-                    BigDecimal precioFinal = p.getPrecio().multiply(BigDecimal.valueOf(0.845));
-                    BigDecimal coste = p.getPrecio().add(
-                            p.getCostes().getCostesAlmacenaje().add(p.getCostes().getCostesEnvio()));
-                    BigDecimal beneficio = precioFinal.subtract(coste);
-                    beneficioTotal = beneficioTotal.add(beneficio);
+                    double precioFinal= p.getPrecio().intValue()-(p.getPrecio().intValue()*((double) p.getDescuento().intValue() /100));
+                    double coste= p.getPrecio().intValue()+p.getCostes().getCostesAlmacenaje().intValue()+p.getCostes().getCostesEnvio().intValue();
+                    double beneficio = coste-precioFinal;
+                     beneficioTotal+= beneficio;
                 }
             }
         }
-        //Falta crear el fichero y escribirlo (pablo)
-
+        File outputDir = new File(path);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+        File outputFile = new File(outputDir, "result_" + fecha + ".txt");
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+        writer.write("Fecha: " + fecha);
+        writer.newLine();
+        writer.write("NumeroDeProductos: " + numeroProductos);
+        writer.newLine();
+        writer.write("BeneficioTotal: " + beneficioTotal);
+        writer.newLine();
+        writer.write("Ruta del fichero: " + file.getAbsolutePath());
+        writer.newLine();
+        writer.write("Nombre del fichero: " + fichSinExtension);
+        writer.newLine();
+        writer.write("Tamaño del fichero: " + file.length() + " bytes");
+        writer.close();
     }
 
 }
